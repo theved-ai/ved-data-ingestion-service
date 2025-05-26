@@ -1,0 +1,16 @@
+services:
+  postgres:
+    container_name: ved_notetaker_rdb
+    image: postgres:12
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: mysecretpassword
+      POSTGRES_DB: ingestion
+    ports:
+      - "5432:5432"
+
+  qdrant:
+    container_name: ved_notetaker_vector_db
+    image: qdrant/qdrant
+    ports:
+      - "6334:6334"   # gRPC
