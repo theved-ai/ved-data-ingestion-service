@@ -1,16 +1,42 @@
 services:
-  postgres:
-    container_name: ved_notetaker_rdb
-    image: postgres:12
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.5.0
     environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+
+  kafka:
+    image: confluentinc/cp-kafka:7.5.0
+    depends_on:
+      - zookeeper
+    ports:
+      - "9092:9092"
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+
+  postgres:
+    image: postgres:17.5
+    container_name: master_db_container
+    environment:
+      POSTGRES_DB: ved_master_db
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: mysecretpassword
-      POSTGRES_DB: ingestion
+      POSTGRES_PASSWORD: secret
     ports:
       - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./scripts:/docker-entrypoint-initdb.d
 
   qdrant:
-    container_name: ved_notetaker_vector_db
     image: qdrant/qdrant
     ports:
-      - "6334:6334"   # gRPC
+      - "6333:6333"
+    volumes:
+      - qdrant_data:/qdrant/storage
+
+volumes:
+  pgdata:
+  qdrant_data:
