@@ -12,7 +12,7 @@ def generate_kafka_publish_event(data: EnrichedIngestionData):
     return IngestionKafkaEvent(
         user_id=data.user_id,
         raw_data_id=data.raw_data_id,
-        data_input_source=data.data_input_source.value(),
+        data_input_source=data.data_input_source,
         status=data.status,
         event_published_at=data.event_published_at_timestamp,
         ingestion_timestamp=data.ingestion_timestamp,
@@ -23,9 +23,9 @@ def enrich_ingestion_data(data: StorageServiceResponse, req_data: IngestionReque
     return EnrichedIngestionData(
         user_id=data.user_id,
         raw_data_id=data.raw_data_id,
-        data_input_source=data.data_input_source.value(),
+        data_input_source=data.data_input_source,
         status=data.status,
         event_published_at_timestamp=datetime.now(tz=pytz.timezone('Asia/Kolkata')),
         ingestion_timestamp=data.ingestion_timestamp,
-        content_timestamp= req_data.metadata['content_timestamp'] if req_data.metadata.get('content_timestamp') else data.ingestion_timestamp
+        content_timestamp= req_data.metadata['content_timestamp'] if req_data.metadata and req_data.metadata.get('content_timestamp') else data.ingestion_timestamp
     )

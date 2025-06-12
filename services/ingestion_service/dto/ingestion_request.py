@@ -1,11 +1,12 @@
-from dataclasses import dataclass
+from typing import Optional, Dict
+
+from pydantic import BaseModel
 
 from services.ingestion_service.enums.input_data_source import InputDataSource
 
 
-@dataclass
-class IngestionRequest:
-    user_uuid: str
+class IngestionRequest(BaseModel):
+    user_id: str
     data_source: InputDataSource
     content: str
-    metadata: dict
+    metadata: Optional[Dict[str, str]] = {}

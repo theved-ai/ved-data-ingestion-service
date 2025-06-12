@@ -1,9 +1,8 @@
-from dataclasses import dataclass
 from datetime import datetime
+
 from pydantic import BaseModel
 
 
-@dataclass
 class IngestionKafkaEvent(BaseModel):
     raw_data_id: str
     user_id: str

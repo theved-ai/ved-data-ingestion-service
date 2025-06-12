@@ -1,11 +1,11 @@
-from typing import Type
+from typing import Type, Dict
 
 from services.ingestion_service.enums.input_data_source import InputDataSource
 from services.ingestion_service.service.storage_service_base import StorageServiceBase
 
 
 class InputDataSourceToServiceRegistry:
-    storage_registry = {}
+    storage_registry: Dict[InputDataSource, StorageServiceBase] = {}
 
     @classmethod
     def register_service(cls, service_cls: Type["StorageServiceBase"]):

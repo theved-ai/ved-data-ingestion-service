@@ -1,11 +1,11 @@
-from dataclasses import dataclass
 from datetime import datetime
+
+from pydantic import BaseModel
 
 from services.ingestion_service.enums.input_data_source import InputDataSource
 
 
-@dataclass
-class EnrichedIngestionData:
+class EnrichedIngestionData(BaseModel):
     user_id: str
     raw_data_id: str
     status: str
