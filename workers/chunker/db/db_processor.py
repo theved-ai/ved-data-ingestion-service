@@ -4,6 +4,7 @@ from workers.chunker.db.db_conn_pool import get_pg_pool
 from workers.chunker.dto.chunk_data import ChunkData
 from workers.chunker.dto.chunk_data_response import ChunkedDataResponse
 from workers.chunker.dto.raw_data_response import RawDataResponse
+from workers.chunker.enums.db_status import DbStatus
 
 
 async def fetch_raw_data_by_id(raw_data_id: str) -> RawDataResponse:
@@ -38,7 +39,7 @@ async def insert_chunk(chunk_data: ChunkData) -> ChunkedDataResponse:
             chunk_data.raw_data_id,
             chunk_data.chunk_content,
             chunk_data.chunk_index,
-            chunk_data.status,
+            DbStatus.RAW_CHUNKS,
             None,
             None,
             0,

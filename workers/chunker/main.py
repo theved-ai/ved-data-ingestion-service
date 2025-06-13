@@ -1,14 +1,12 @@
 import asyncio
 import json
-import logging
 import os
 
+from workers.chunker.config.logging_config import logger
 from workers.chunker.db.db_conn_pool import init_pg_pool, close_pg_pool
 from workers.chunker.dto.raw_data_consumed_event import RawDataKafkaEvent
 from workers.chunker.service.chunk_facade_service import ChunkFacadeService
 from workers.chunker.service.kafka_service import KafkaService
-
-logger = logging.getLogger(__name__)
 
 
 async def main():

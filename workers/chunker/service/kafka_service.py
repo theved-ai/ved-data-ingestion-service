@@ -1,10 +1,9 @@
 import json
-import logging
 import os
 from typing import AsyncIterator
 
 from aiokafka import AIOKafkaProducer, AIOKafkaConsumer, ConsumerRecord
-
+from workers.chunker.config.logging_config import logger
 from workers.chunker.dto.embed_topic_event import EmbedTopicEvent
 from workers.chunker.utils.application_constants import CHUNKED_DATA_TOPIC, RAW_DATA_TOPIC, RAW_DATA_CONSUMER_GROUP, \
     KAFKA_BOOTSTRAP_SERVER
@@ -14,7 +13,6 @@ class KafkaService:
     def __init__(self):
         self.kafka_producer = None
         self.kafka_consumer = None
-        self.logger = logging.getLogger(__name__)
 
     async def __get_kafka_consumer(self):
         if self.kafka_consumer is None:
@@ -22,8 +20,8 @@ class KafkaService:
                 RAW_DATA_TOPIC,
                 bootstrap_servers=os.getenv(KAFKA_BOOTSTRAP_SERVER),
                 group_id=RAW_DATA_CONSUMER_GROUP,
-                auto_offset_reset="earliest",
-                enable_auto_commit=False,
+                auto_offset_reset="latest",
+                enable_auto_commit=True,
                 value_deserializer=lambda v: json.loads(v.decode("utf-8")),
                 key_deserializer=lambda v: v.decode("utf-8")
             )
@@ -47,7 +45,7 @@ class KafkaService:
             async for msg in consumer:
                 yield msg
         except Exception:
-            self.logger.exception(f"Exception while consuming event from kafka")
+            logger.exception(f"Exception while consuming event from kafka")
         finally:
             await self.kafka_consumer.stop()
 
@@ -61,4 +59,4 @@ class KafkaService:
                 value=event.model_dump_json()
             )
         except Exception:
-            self.logger.exception(f"Exception while publishing event to kafka")
+            logger.exception(f"Exception while publishing event to kafka")
