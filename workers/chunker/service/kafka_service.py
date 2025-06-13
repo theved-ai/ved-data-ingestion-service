@@ -5,8 +5,7 @@ from typing import AsyncIterator
 from aiokafka import AIOKafkaProducer, AIOKafkaConsumer, ConsumerRecord
 from workers.chunker.config.logging_config import logger
 from workers.chunker.dto.embed_topic_event import EmbedTopicEvent
-from workers.chunker.utils.application_constants import CHUNKED_DATA_TOPIC, RAW_DATA_TOPIC, RAW_DATA_CONSUMER_GROUP, \
-    KAFKA_BOOTSTRAP_SERVER
+from workers.chunker.utils.application_constants import CHUNKED_DATA_TOPIC, RAW_DATA_TOPIC, RAW_DATA_CONSUMER_GROUP, KAFKA_BOOTSTRAP_SERVER
 
 
 class KafkaService:
