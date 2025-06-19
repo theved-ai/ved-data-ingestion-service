@@ -21,23 +21,24 @@ services:
       KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:29092,PLAINTEXT_HOST://0.0.0.0:9092
       KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
 
-  postgres:
-    image: postgres:17.5
-    container_name: master_db_container
-    environment:
-      POSTGRES_DB: ved_master_db
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: secret
-    ports:
-      - "5432:5432"
-    volumes:
-      - pgdata:/var/lib/postgresql/data
-      - ./scripts:/docker-entrypoint-initdb.d
+#  postgres:
+#    image: postgres:17.5
+#    container_name: master_db_container
+#    environment:
+#      POSTGRES_DB: ved_master_db
+#      POSTGRES_USER: postgres
+#      POSTGRES_PASSWORD: secret
+#    ports:
+#      - "5432:5432"
+#    volumes:
+#      - pgdata:/var/lib/postgresql/data
+#      - ./scripts:/docker-entrypoint-initdb.d
 
   qdrant:
     image: qdrant/qdrant
     ports:
       - "6333:6333"
+      - "6334:6334"
     volumes:
       - qdrant_data:/qdrant/storage
 

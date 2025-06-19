@@ -12,6 +12,7 @@ class ChunkedDataConsumedEvent(BaseModel):
     chunk_content: str
     data_input_source: str
     status: str
+    metadata: str
     ingestion_timestamp: datetime
     event_published_at: datetime
     embedding_model: str

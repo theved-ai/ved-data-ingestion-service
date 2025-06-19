@@ -11,7 +11,7 @@ async def fetch_raw_data_by_id(raw_data_id: str) -> RawDataResponse:
     pool = get_pg_pool()
     async with pool.acquire() as conn:
         query = """
-                select uuid, user_id, content, source, created_at, status from raw_data
+                select uuid, user_id, content, source, created_at, status, metadata from raw_data
                 where uuid = $1
             """
         row = await conn.fetchrow(query, raw_data_id)
@@ -21,7 +21,8 @@ async def fetch_raw_data_by_id(raw_data_id: str) -> RawDataResponse:
             content=row['content'],
             data_source=row['source'],
             created_at=row['created_at'],
-            status=row['status']
+            status=row['status'],
+            metadata=row['metadata']
         )
 
 

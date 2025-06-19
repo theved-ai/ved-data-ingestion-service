@@ -21,7 +21,8 @@ def from_chunk(chunk_data_req: ChunkData, chunk_data_db: ChunkedDataResponse):
         ingestion_timestamp=chunk_data_db.created_at,
         content_timestamp=None,
         event_published_at=datetime.now(tz=pytz.timezone('Asia/Kolkata')),
-        embedding_model=EMBEDDING_MODEL_NAME
+        embedding_model=EMBEDDING_MODEL_NAME,
+        metadata=chunk_data_req.metadata
     )
 
 
@@ -37,4 +38,5 @@ class EmbedTopicEvent(BaseModel):
     event_published_at: datetime
     embedding_model: str
     content_timestamp: Optional[datetime] = None
+    metadata: Optional[str] = None
 

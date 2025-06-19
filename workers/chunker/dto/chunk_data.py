@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from typing import Any
 
 
 @dataclass
@@ -10,3 +11,4 @@ class ChunkData:
     chunk_index: int
     data_input_source: str
     user_id: str
+    metadata: str

@@ -11,3 +11,4 @@ class RawDataResponse(BaseModel):
     data_source: str
     created_at: datetime
     status: str
+    metadata: str

@@ -1,7 +1,6 @@
 import uuid
 
 from transformers import AutoTokenizer
-
 from workers.chunker.dto.chunk_data import ChunkData
 from workers.chunker.dto.raw_data_response import RawDataResponse
 from workers.chunker.utils.application_constants import EMBEDDING_MODEL_NAME, CHUNK_TOKEN_LIMIT, CHUNK_TOKEN_OVERLAP
@@ -33,7 +32,8 @@ class ChunkingService:
                     chunk_index=chunk_counter,
                     status=raw_content_data.status,
                     user_id=str(raw_content_data.user_id),
-                    uuid=str(uuid.uuid4())
+                    uuid=str(uuid.uuid4()),
+                    metadata=str(raw_content_data.metadata)
                 ))
 
             i += CHUNK_TOKEN_LIMIT - CHUNK_TOKEN_OVERLAP
