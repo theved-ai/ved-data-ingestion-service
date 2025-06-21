@@ -6,13 +6,13 @@ from services.ingestion_service.enums.stream_event_type import StreamEventType
 from services.ingestion_service.enums.stream_response_status import StreamResponseStatus
 from services.ingestion_service.registry.input_data_source_to_service_registry import InputDataSourceToServiceRegistry
 from services.ingestion_service.service.stream_handler.stream_handler_base import StreamHandlerBase
-from services.ingestion_service.service.speech_to_text_service import generata_text
+from services.ingestion_service.service.speech_to_text_service import pcm_b64_to_text
 from services.ingestion_service.config.logging_config import logger
 from services.ingestion_service.registry.event_type_to_handler_registry import EventTypeHandlerRegistry
 
 async def _transcribe_and_save(payload: MeetPayload, storage_service, audio_chunk_id: str):
     try:
-        audio_chunk_transcript = generata_text(payload.audio_blob, payload.audio_format)
+        audio_chunk_transcript = pcm_b64_to_text(audio_blob_b64=payload.audio_blob, audio_chunk_index=payload.audio_chunk_index)
         await storage_service.save_audio_chunk_transcript(audio_chunk_transcript, audio_chunk_id)
     except Exception as e:
         logger.exception(f"Failed to transcribe and save audio chunk {audio_chunk_id}: {e}")
