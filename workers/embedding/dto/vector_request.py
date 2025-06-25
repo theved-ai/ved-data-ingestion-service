@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import json
 from datetime import datetime
 from typing import List, Any
@@ -14,13 +16,21 @@ class VectorRequest(BaseModel):
     vector: list[float]
     data_input_source: str
     status: str
-    ingestion_timestamp: datetime
-    content_timestamp: datetime
-    event_published_at: datetime
-    model_config = ConfigDict(extra="allow")
+    ingestion_timestamp: float
+    content_timestamp: float
+    event_published_at: float
+    model_config = ConfigDict(extra="allow", strict=True)
 
 def build_vector_request(chunk_data_event: 'ChunkedDataConsumedEvent', vector: List[float]) -> VectorRequest:
     metadata_dict: dict[str, Any] = json.loads(chunk_data_event.metadata)
+
+    def safe_timestamp(dt: datetime | None) -> float | None:
+        return dt.timestamp() if dt else None
+
+    ingestion_ts = safe_timestamp(chunk_data_event.ingestion_timestamp)
+    content_ts = safe_timestamp(chunk_data_event.content_timestamp) or ingestion_ts
+    event_published_ts = safe_timestamp(chunk_data_event.event_published_at)
+
     return VectorRequest(
         user_id=chunk_data_event.user_id,
         embedding_model=chunk_data_event.embedding_model,
@@ -29,8 +39,8 @@ def build_vector_request(chunk_data_event: 'ChunkedDataConsumedEvent', vector: L
         vector=vector,
         data_input_source=chunk_data_event.data_input_source,
         status=chunk_data_event.status,
-        ingestion_timestamp=chunk_data_event.ingestion_timestamp,
-        content_timestamp=chunk_data_event.content_timestamp or chunk_data_event.ingestion_timestamp,
-        event_published_at=chunk_data_event.event_published_at,
+        ingestion_timestamp=ingestion_ts,
+        content_timestamp=content_ts,
+        event_published_at=event_published_ts,
         **metadata_dict
     )
