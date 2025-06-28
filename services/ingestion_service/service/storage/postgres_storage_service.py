@@ -21,7 +21,8 @@ class PostgresStorageService(StorageServiceBase):
             InputDataSource.SLACK,
             InputDataSource.PDF,
             InputDataSource.WEB_PAGE,
-            InputDataSource.YT_TRANSCRIPT
+            InputDataSource.YT_TRANSCRIPT,
+            InputDataSource.CHAT
         ]
 
     async def process(self, request: IngestionRequest) -> StorageServiceResponse:

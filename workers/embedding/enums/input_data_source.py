@@ -8,3 +8,4 @@ class InputDataSource(Enum):
     YT_TRANSCRIPT = "yt_transcript"
     WEB_PAGE = "web_page"
     PDF = "pdf"
+    CHAT = "chat"
