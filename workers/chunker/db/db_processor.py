@@ -11,12 +11,12 @@ async def fetch_raw_data_by_id(raw_data_id: str) -> RawDataResponse:
     pool = get_pg_pool()
     async with pool.acquire() as conn:
         query = """
-                select uuid, user_id, content, source, created_at, status, metadata from raw_data
-                where uuid = $1
+                select id, user_id, content, source, created_at, status, metadata from raw_data
+                where id = $1
             """
         row = await conn.fetchrow(query, raw_data_id)
         return RawDataResponse(
-            raw_data_id=row['uuid'],
+            raw_data_id=row['id'],
             user_id=row['user_id'],
             content=row['content'],
             data_source=row['source'],
@@ -32,7 +32,7 @@ async def insert_chunk(chunk_data: ChunkData) -> ChunkedDataResponse:
         query = """
                 Insert into chunked_data
                 values($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
-                returning uuid, raw_data_id, chunk_content, status, chunk_index, created_at
+                returning id, raw_data_id, chunk_content, status, chunk_index, created_at
             """
         row = await conn.fetchrow(
             query,
@@ -49,7 +49,7 @@ async def insert_chunk(chunk_data: ChunkData) -> ChunkedDataResponse:
         )
 
         return ChunkedDataResponse(
-            chunk_id=row['uuid'],
+            chunk_id=row['id'],
             raw_data_id=row['raw_data_id'],
             chunk_content=row['chunk_content'],
             status=row['status'],

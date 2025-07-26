@@ -7,6 +7,6 @@ async def update_chunk_status(chunk_id: str, status: str):
         query = """
             update chunked_data
             set status = $1
-            where uuid = $2 
+            where id = $2 
         """
         await conn.execute(query, status, chunk_id)

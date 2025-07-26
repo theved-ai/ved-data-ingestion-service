@@ -20,10 +20,10 @@ async def insert_raw_data(ingestion_data: IngestionRequest) -> StorageServiceRes
         async with pool.acquire() as conn:
             query = """
                 INSERT INTO raw_data (
-                    uuid, user_id, content, source, status, metadata, retries, is_archived, created_at, updated_at
+                    id, user_id, content, source, status, metadata, retries, is_archived, created_at, updated_at
                 ) VALUES (
                     $1, $2, $3, $4, $5, $6, $7, $8, $9, $10
-                ) RETURNING uuid, user_id, source, status, created_at;
+                ) RETURNING id, user_id, source, status, created_at;
             """
             now = datetime.utcnow()
             doc_id = str(uuid.uuid4())
@@ -42,7 +42,7 @@ async def insert_raw_data(ingestion_data: IngestionRequest) -> StorageServiceRes
             )
             return StorageServiceResponse(
                 user_id=str(row["user_id"]),
-                raw_data_id=str(row['uuid']),
+                raw_data_id=str(row['id']),
                 data_input_source=InputDataSource(row["source"]),
                 status=str(row["status"]),
                 ingestion_timestamp=row["created_at"]
@@ -57,7 +57,7 @@ async def update_raw_data_status(raw_data_id, status):
             query="""
                 update raw_data
                 set status = $1
-                where uuid = $2
+                where id = $2
             """
             await conn.execute(query, status, raw_data_id)
 
@@ -122,8 +122,8 @@ async def save_raw_data_transcript(final_transcript: str, raw_data_id: str):
             query = """
                 UPDATE raw_data
                 SET content = $1, status = $2
-                WHERE uuid = $3
-                RETURNING uuid, user_id, source, status, created_at;
+                WHERE id = $3
+                RETURNING id, user_id, source, status, created_at;
             """
             row = await conn.fetchrow(query, final_transcript, DbStatus.TRANSCRIPTION_COMPLETE, raw_data_id)
             if row == "UPDATE 0":
@@ -131,7 +131,7 @@ async def save_raw_data_transcript(final_transcript: str, raw_data_id: str):
 
             return StorageServiceResponse(
                 user_id=str(row["user_id"]),
-                raw_data_id=str(row['uuid']),
+                raw_data_id=str(row['id']),
                 data_input_source=InputDataSource(row["source"]),
                 status=str(row["status"]),
                 ingestion_timestamp=row["created_at"]
